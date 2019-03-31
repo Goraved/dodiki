@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<title>W3.CSS Template</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
+<style>
+body,h1,h5 {font-family: "Raleway", sans-serif}
+body, html {height: 100%}
+.bgimg {
+  background-image: url('http://quotesideas.com/wp-content/uploads/2015/07/sad-boy-wallpaper-hd-download-6.jpg');
+  min-height: 100%;
+  background-position: center;
+  background-size: cover;
+}
+</style>
+<script src="static/js/main.js"></script>
+<body>
+
+<div class="bgimg w3-display-container w3-text-white">
+  <div class="w3-display-middle w3-jumbo">
+    <p>Dodiki</p>
+  </div>
+  <div class="w3-display-topleft w3-container w3-xlarge">
+    <p><button onclick="document.getElementById('menu').style.display='block'" class="w3-button w3-black">Useful</button></p>
+  </div>
+  <div class="w3-display-bottomleft w3-container">
+    <p class="w3-xlarge">Dodiki</p>
+    <p class="w3-large">Sad But True ;(</p>
+  </div>
+</div>
+
+<!-- Menu Modal -->
+<div id="menu" class="w3-modal">
+  <div class="w3-modal-content w3-animate-zoom">
+    <div class="w3-container w3-black w3-display-container">
+      <span onclick="document.getElementById('menu').style.display='none'" class="w3-button w3-display-topright w3-large">x</span>
+      <h1>Payment card</h1>
+    </div>
+    <div class="w3-container">
+      <h5><span onclick="copyCardNumber(this)" id="cardNumber">4149439101302291</span></h5>
+      <h5>СЕРЕБРЯКОВ ДМИТРО МИХАЙЛОВИЧ</h5>
+    </div>
+    <div class="w3-container w3-black">
+      <h1>Links</h1>
+    </div>
+    <div class="w3-container">
+      <h5><a href="https://trello.com/b/Ngqfwzmp/dodiki-songs-2nd-round" target="_blank">Trello</a></h5>
+      <h5><a href="https://docs.google.com/spreadsheets/d/1gvibnMG0cB0v6U7yZuTWwsCiDXwUK_InQiAgTajrSrY/edit#gid=0" target="_blank">Excel</a></h5>
+    </div>
+  </div>
+</div>
+
+
+</body>
+</html>
+
