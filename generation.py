@@ -1,6 +1,6 @@
 from datetime import date, timedelta
 
-from data import write_days_list_into_db, get_members
+from data import write_days_list_into_db, get_members, get_rehearsals
 
 
 def get_list_of_days(start_from=None):
@@ -21,15 +21,26 @@ def get_list_of_days(start_from=None):
     return days
 
 
-def set_members(days, member_index=None):
+def set_members(days, member_index=None, half=False):
     members = get_members()
     if member_index is None:
         member_index = 0
     for day in days:
         day_index = days.index(day)
-        if day_index in [0, 1]:
+        # individual logic for 2 first days
+        if day_index == 0:
             day['member'] = members[member_index]['id']
             continue
+        elif day_index == 1:
+            if not half:
+                day['member'] = members[member_index]['id']
+                continue
+            else:
+                member_index += 1
+                if member_index > 3:
+                    member_index = 0
+                day['member'] = members[member_index]['id']
+        # regular logic for the rest of days
         previous_pay = days[day_index - 1]['member']
         past_previous_pay = days[day_index - 2]['member']
         if previous_pay == past_previous_pay:
@@ -40,8 +51,12 @@ def set_members(days, member_index=None):
     return days
 
 
-def generate_list(from_date, from_member):
+def generate_list(from_date, from_member, half=False):
     days = get_list_of_days(from_date)
-    set_members(days, from_member)
+    set_members(days, from_member, half)
     write_days_list_into_db(days)
     return days
+
+
+def get_future_rehearsals():
+    return get_rehearsals(date.today())

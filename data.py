@@ -47,3 +47,20 @@ def write_days_list_into_db(days):
     day_data = [f"(0,'{day['date']}','{day['weekday']}','{day['member']}',{day['passed']}, 330)" for day in days]
     str_query += ', '.join(day_data)
     query(str_query)
+
+
+def get_rehearsals(from_date):
+    rehearsals = []
+    members = get_members()
+    cur = query(f'Select id, date, member_id, price, day_of_week from days where date >= {from_date} and passed = 0')
+    for row in cur.fetchall():
+        member = [_['name'] for _ in members if _['id'] == row[2]][0]
+        rehearsals.append({'id': row[0], 'date': row[1], 'member': member, 'price': row[3], 'weekday': row[4]})
+    cur.close()
+    return rehearsals
+
+
+def set_passed_rehearsals():
+    today = date.today()
+    cur = query(f'Update days set passed = 0 where date > {today}')
+    cur.close()

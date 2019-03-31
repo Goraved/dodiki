@@ -1,10 +1,16 @@
 <!DOCTYPE html>
 <html>
-<title>W3.CSS Template</title>
+<title>DoDiKi :(</title>
+<meta name="description" content="Become a better dodik right now!"/>
+<meta property="og:title" content="Sad But True :("/>
+<meta property="og:description" content="Become a better dodik right now!"/>
+<meta property="og:image"
+      content="https://data.whicdn.com/images/85109845/original.gif"/>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
+<link rel="shortcut icon" href="{{ url_for('static', filename='images/icons/favicon.ico') }}">
 <style>
 body,h1,h5 {font-family: "Raleway", sans-serif}
 body, html {height: 100%}
@@ -14,44 +20,89 @@ body, html {height: 100%}
   background-position: center;
   background-size: cover;
 }
+
+
 </style>
 <script src="static/js/main.js"></script>
 <body>
 
 <div class="bgimg w3-display-container w3-text-white">
-  <div class="w3-display-middle w3-jumbo">
-    <p>Dodiki</p>
-  </div>
-  <div class="w3-display-topleft w3-container w3-xlarge">
-    <p><button onclick="document.getElementById('menu').style.display='block'" class="w3-button w3-black">Useful</button></p>
-  </div>
-  <div class="w3-display-bottomleft w3-container">
-    <p class="w3-xlarge">Dodiki</p>
-    <p class="w3-large">Sad But True ;(</p>
-  </div>
+    <div class="w3-display-middle w3-jumbo">
+        <h3>Next rehearsal at {{today['date']}}, {{today['weekday']}}</h3>
+        <h2><b><a
+                href="https://soundcloud.com/roman-pobotin/sadbuttrue-wav/s-Nce4M?in=roman-pobotin/sets/sbt/s-ZlEpE#t=0:7"
+                target="_blank">{{today['member']}}</a></b>
+            will pay!</h2>
+    </div>
+    <div class="w3-display-topleft w3-container w3-xlarge">
+        <p>
+            <button onclick="document.getElementById('menu').style.display='block'" class="w3-button w3-black">Useful
+            </button>
+        </p>
+        <p>
+            <button onclick="document.getElementById('contact').style.display='block'" class="w3-button w3-black">
+                Rehearsals
+            </button>
+        </p>
+    </div>
+    <div class="w3-display-bottomleft w3-container">
+        <p class="w3-xlarge">Dodiki</p>
+        <p class="w3-large">Sad But True ;(</p>
+    </div>
 </div>
 
 <!-- Menu Modal -->
 <div id="menu" class="w3-modal">
-  <div class="w3-modal-content w3-animate-zoom">
-    <div class="w3-container w3-black w3-display-container">
-      <span onclick="document.getElementById('menu').style.display='none'" class="w3-button w3-display-topright w3-large">x</span>
-      <h1>Payment card</h1>
+    <div class="w3-modal-content w3-animate-zoom">
+        <div class="w3-container w3-black w3-display-container">
+            <span onclick="document.getElementById('menu').style.display='none'"
+                  class="w3-button w3-display-topright w3-large">x</span>
+            <h1>Payment card</h1>
+        </div>
+        <div class="w3-container">
+            <h5><span onclick="copyCardNumber(this)" id="cardNumber">4149439101302291</span></h5>
+            <h5>СЕРЕБРЯКОВ ДМИТРО МИХАЙЛОВИЧ</h5>
+        </div>
+        <div class="w3-container w3-black">
+            <h1>Links</h1>
+        </div>
+        <div class="w3-container">
+            <h5><a href="https://trello.com/b/Ngqfwzmp/dodiki-songs-2nd-round" target="_blank">Trello</a></h5>
+            <h5><a href="https://docs.google.com/spreadsheets/d/1gvibnMG0cB0v6U7yZuTWwsCiDXwUK_InQiAgTajrSrY/edit#gid=0"
+                   target="_blank">Excel</a></h5>
+        </div>
     </div>
-    <div class="w3-container">
-      <h5><span onclick="copyCardNumber(this)" id="cardNumber">4149439101302291</span></h5>
-      <h5>СЕРЕБРЯКОВ ДМИТРО МИХАЙЛОВИЧ</h5>
-    </div>
-    <div class="w3-container w3-black">
-      <h1>Links</h1>
-    </div>
-    <div class="w3-container">
-      <h5><a href="https://trello.com/b/Ngqfwzmp/dodiki-songs-2nd-round" target="_blank">Trello</a></h5>
-      <h5><a href="https://docs.google.com/spreadsheets/d/1gvibnMG0cB0v6U7yZuTWwsCiDXwUK_InQiAgTajrSrY/edit#gid=0" target="_blank">Excel</a></h5>
-    </div>
-  </div>
 </div>
 
+<!-- Rehearsals Modal -->
+<div id="contact" class="w3-modal">
+    <div class="w3-modal-content w3-animate-zoom">
+        <div class="w3-container w3-black">
+            <span onclick="document.getElementById('contact').style.display='none'"
+                  class="w3-button w3-display-topright w3-large">x</span>
+            <h1>Rehearsals</h1>
+        </div>
+        <div class="w3-container">
+            <p>List of planned rehearsals:</p>
+            <table class="w3-table w3-bordered">
+                <tr>
+                    <th>Date</th>
+                    <th>Weekday</th>
+                    <th>Who will pay</th>
+                    <th>Price</th>
+                </tr>
+                {% for rehearsal in rehearsals %}
+                <tr>
+                    <td>{{rehearsal['date']}}</td>
+                    <td>{{rehearsal['weekday']}}</td>
+                    <td>{{rehearsal['member']}}</td>
+                    <td>{{rehearsal['price']}}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+</div>
 
 </body>
 </html>
