@@ -61,6 +61,6 @@ def get_rehearsals(from_date):
 
 
 def set_passed_rehearsals():
-    today = date.today()
-    cur = query(f'Update days set passed = 0 where date > {today}')
+    today = date.today().strftime('%Y%m%d')
+    cur = query(f'Update days set passed = 1 where date < {today}')
     # cur.close()
