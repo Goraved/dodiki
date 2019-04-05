@@ -1,11 +1,11 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-from datetime import date
+from datetime import date, datetime
 
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 from werkzeug.utils import redirect
 
-from data import set_passed_rehearsals
+from data import set_passed_rehearsals, get_members
 from generation import generate_list, get_future_rehearsals, cancel_rehearsal
 
 app = Flask(__name__)
@@ -16,13 +16,19 @@ app.jinja_env.add_extension('jinja2.ext.loopcontrols')
 def main():
     set_passed_rehearsals()
     rehearsals = get_future_rehearsals()
-    return render_template('index.html', today=rehearsals[0], rehearsals=rehearsals)
+    members = get_members()
+    return render_template('index.html', today=rehearsals[0], rehearsals=rehearsals, members=members)
 
 
-@app.route("/generate")
+@app.route("/generate", methods=['POST'])
 def generate_days():
-    # TODO add input form
-    day_list = generate_list(date.today(), 1, False)
+    member = int(request.form['member'])
+    try:
+        half = bool(request.form['half'])
+    except:
+        half = False
+    date_from = datetime.strptime(request.form['date'], '%Y-%m-%d').date()
+    day_list = generate_list(date_from, member, half)
     return redirect("/")
 
 
