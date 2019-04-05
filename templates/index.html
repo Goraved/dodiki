@@ -11,17 +11,17 @@
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
 <link rel="shortcut icon" href="{{ url_for('static', filename='images/icons/favicon.ico') }}">
+<link rel="stylesheet" href="static/css/main.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <style>
 body,h1,h5 {font-family: "Raleway", sans-serif}
 body, html {height: 100%}
 .bgimg {
-  background-image: url('http://quotesideas.com/wp-content/uploads/2015/07/sad-boy-wallpaper-hd-download-6.jpg');
+  background-image: url('https://i.pinimg.com/564x/7b/48/5a/7b485a887a2e46d8a339da1a7a345e2f.jpg');
   min-height: 100%;
   background-position: center;
   background-size: cover;
 }
-
-
 </style>
 <script src="static/js/main.js"></script>
 <body>
@@ -36,11 +36,13 @@ body, html {height: 100%}
     </div>
     <div class="w3-display-topleft w3-container w3-large">
         <p>
-            <button onclick="document.getElementById('menu').style.display='block'" class="w3-button w3-black w3-small">Useful
+            <button onclick="document.getElementById('menu').style.display='block'" class="w3-button w3-black w3-small">
+                Useful
             </button>
         </p>
         <p>
-            <button onclick="document.getElementById('contact').style.display='block'" class="w3-button w3-black w3-small">
+            <button onclick="document.getElementById('contact').style.display='block'"
+                    class="w3-button w3-black w3-small">
                 Rehearsals
             </button>
         </p>
@@ -90,6 +92,7 @@ body, html {height: 100%}
                     <th>Weekday</th>
                     <th>Who will pay</th>
                     <th>Price</th>
+                    <th>Cancel</th>
                 </tr>
                 {% for rehearsal in rehearsals %}
                 <tr>
@@ -97,6 +100,11 @@ body, html {height: 100%}
                     <td>{{rehearsal['weekday']}}</td>
                     <td>{{rehearsal['member']}}</td>
                     <td>{{rehearsal['price']}}</td>
+                    <td>
+                        <button class="btn" onclick="location.href = '/cancel/{{rehearsal['id']}}'"><i
+                                class="fa fa-trash"></i>
+                        </button>
+                    </td>
                 </tr>
                 {% endfor %}
             </table>

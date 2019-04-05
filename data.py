@@ -32,13 +32,11 @@ def get_members():
     cur = query('Select * from members')
     for row in cur.fetchall():
         members.append({'id': row[0], 'name': row[1]})
-    # cur.close()
     return members
 
 
 def delete_not_relevant_days(from_date):
     cur = query(f"delete from days where date >= {from_date}")
-    # cur.close()
 
 
 def write_days_list_into_db(days):
@@ -56,11 +54,13 @@ def get_rehearsals(from_date):
     for row in cur.fetchall():
         member = [_['name'] for _ in members if _['id'] == row[2]][0]
         rehearsals.append({'id': row[0], 'date': row[1], 'member': member, 'price': row[3], 'weekday': row[4]})
-    # cur.close()
     return rehearsals
 
 
 def set_passed_rehearsals():
     today = date.today().strftime('%Y%m%d')
     cur = query(f'Update days set passed = 1 where date < {today}')
-    # cur.close()
+
+
+def delete_rehearsal(rehearsal_id):
+    cur = query(f'Delete from days where id = {rehearsal_id}')
