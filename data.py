@@ -64,3 +64,13 @@ def set_passed_rehearsals():
 
 def delete_rehearsal(rehearsal_id):
     cur = query(f'Delete from days where id = {rehearsal_id}')
+
+
+def swap_rehearsal_members(swap_ids):
+    rehearsals = []
+    cur = query(f'Select id, member_id from days where id in ({swap_ids[0]},{swap_ids[1]})')
+    for row in cur.fetchall():
+        rehearsals.append({'id': row[0], 'member_id': row[1]})
+    cur = query(f"Update days set member_id = {rehearsals[1]['member_id']} where id = {rehearsals[0]['id']};")
+    cur = query(f"Update days set member_id = {rehearsals[0]['member_id']} where id = {rehearsals[1]['id']};")
+

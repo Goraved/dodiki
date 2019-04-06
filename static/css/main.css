@@ -2,11 +2,15 @@
 	background-color: Red;
 	border: none;
 	color: white;
-	padding: 12px 16px;
-	font-size: 16px;
+	padding: 0px 5px;
+	font-size: 12px;
 	cursor: pointer;
 }
 
+#swap {
+display: none;
+margin-top: 8px;
+}
 
 /* Darker background on mouse-over */
 .btn:hover {
