@@ -1,5 +1,7 @@
 click
 Flask
+flask-swagger-ui
+flask-restplus
 itsdangerous
 Jinja2
 MarkupSafe
