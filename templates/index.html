@@ -14,42 +14,62 @@
 <link rel="stylesheet" href="static/css/main.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <style>
-      body,h1,h5 {font-family: "Raleway", sans-serif}
-      body, html {height: 100%}
-      .bgimg {
-      background-image: url('https://i.pinimg.com/564x/7b/48/5a/7b485a887a2e46d8a339da1a7a345e2f.jpg');
-      min-height: 100%;
-      background-position: center;
-      background-size: cover;
-      }
+    body, h1, h5 {
+        font-family: "Raleway", sans-serif
+    }
+
+    body, html {
+        height: 100%
+    }
+
+    .bgimg {
+        background-image: url('https://i.pinimg.com/564x/7b/48/5a/7b485a887a2e46d8a339da1a7a345e2f.jpg');
+        min-height: 100%;
+        background-position: center;
+        background-size: cover;
+    }
 </style>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-<script src="static/js/main.js"></script>
+<script type="text/javascript" src="static/js/utils.js"></script>
 <body>
+
+<template id="rehearsal-row-template">
+    <tr class="r-row">
+        <td class="r-date"></td>
+        <td class="r-weekday"></td>
+        <td class="r-member"></td>
+        <td>
+            <button type="button" rehearsal-id="" class="btn">
+                <i class="fa fa-trash"></i>
+            </button>
+        </td>
+        <td><input type="checkbox" name="swap"
+                   value=""></td>
+    </tr>
+</template>
+
 <div class="bgimg w3-display-container w3-text-white">
     <div class="w3-display-middle w3-jumbo">
-        <h3>Next rehearsal at {{today['date']}}, {{today['weekday']}}</h3>
-        <h2><b><a
-                href="https://soundcloud.com/roman-pobotin/sadbuttrue-wav/s-Nce4M?in=roman-pobotin/sets/sbt/s-ZlEpE#t=0:7"
-                target="_blank">{{today['member']}}</a></b>
+        <h3 id="title-date">Next rehearsal at {{today['date']}}, {{today['weekday']}}</h3>
+        <h2><b><a id="title-member"
+                  href="https://soundcloud.com/roman-pobotin/sadbuttrue-wav/s-Nce4M?in=roman-pobotin/sets/sbt/s-ZlEpE#t=0:7"
+                  target="_blank">{{today['member']}}</a></b>
             will pay!
         </h2>
     </div>
     <div class="w3-display-topleft w3-container w3-large">
         <p>
-            <button onclick="document.getElementById('menu').style.display='block'" class="w3-button w3-black w3-small">
+            <button id="useful-action" class="w3-button w3-black w3-small">
                 Useful
             </button>
         </p>
         <p>
-            <button onclick="document.getElementById('rehearsals').style.display='block'"
-                    class="w3-button w3-black w3-small">
+            <button id="rehearsals-action" class="w3-button w3-black w3-small">
                 Rehearsals
             </button>
         </p>
         <p>
-            <button onclick="document.getElementById('execute').style.display='block'"
-                    class="w3-button w3-black w3-small">
+            <button id="reschedule-action" class="w3-button w3-black w3-small">
                 Reschedule
             </button>
         </p>
@@ -63,8 +83,9 @@
 <div id="menu" class="w3-modal">
     <div class="w3-modal-content w3-animate-zoom">
         <div class="w3-container w3-black w3-display-container">
-               <span onclick="document.getElementById('menu').style.display='none'"
-                     class="w3-button w3-display-topright w3-large">x</span>
+            <!--               <span id="menu-close" onclick="document.getElementById('menu').style.display='none'"-->
+            <!--                     class="w3-button w3-display-topright w3-large">x</span>-->
+            <span id="menu-close" class="w3-button w3-display-topright w3-large">x</span>
             <h1>Payment card</h1>
         </div>
         <div class="w3-container">
@@ -86,43 +107,50 @@
 <div id="rehearsals" class="w3-modal">
     <div class="w3-modal-content w3-animate-zoom">
         <div class="w3-container w3-black">
-               <span onclick="document.getElementById('rehearsals').style.display='none'"
-                     class="w3-button w3-display-topright w3-large">x</span>
+            <!--               <span id="rehearsals-close" onclick="document.getElementById('rehearsals').style.display='none'"-->
+            <!--                     class="w3-button w3-display-topright w3-large">x</span>-->
+            <span id="rehearsals-close" class="w3-button w3-display-topright w3-large">x</span>
             <h1>Rehearsals</h1>
         </div>
         <div class="w3-container">
-            <form action="/swap" method="post">
-                <div class="w3-container">
-                    <div class="w3-left">
-                        <p>List of planned rehearsals:</p>
-                    </div>
-                    <div class="w3-right">
-                        <button id="swap" type="submit" class="w3-button w3-green">↑↓</button>
-                    </div>
+            <!--            <form action="/swap" method="post">-->
+            <div class="w3-container">
+                <div class="w3-left">
+                    <p>List of planned rehearsals:</p>
                 </div>
-                <table class="w3-table w3-bordered w3-centered">
-                    <tr>
-                        <th>Date</th>
-                        <th>Weekday</th>
-                        <th>Who will pay</th>
-                        <th>Cancel</th>
-                        <th>Swap</th>
-                    </tr>
-                    {% for rehearsal in rehearsals %}
-                    <tr>
-                        <td>{{rehearsal['date']}}</td>
-                        <td>{{rehearsal['weekday']}}</td>
-                        <td>{{rehearsal['member']}}</td>
-                        <td>
-                            <button type="button" class="btn" onclick="location.href='/cancel/{{rehearsal['id']}}'">
-                                <i class="fa fa-trash"></i>
-                            </button>
-                        </td>
-                        <td><input type="checkbox" name="swap" value="{{rehearsal['id']}}"></td>
-                    </tr>
-                    {% endfor %}
-                </table>
-            </form>
+                <div class="w3-right">
+                    <!--                        <button id="swap" type="submit" class="w3-button w3-green">↑↓</button>-->
+                    <button id="swap" type="button" class="w3-button w3-green">↑↓</button>
+                </div>
+            </div>
+            <table id="rehearsals-table" class="w3-table w3-bordered w3-centered">
+                <tr>
+                    <th>Date</th>
+                    <th>Weekday</th>
+                    <th>Who will pay</th>
+                    <th>Cancel</th>
+                    <th>Swap</th>
+                </tr>
+                {% for rehearsal in rehearsals %}
+                <tr class="r-row">
+                    <td>{{rehearsal['date']}}</td>
+                    <td>{{rehearsal['weekday']}}</td>
+                    <td>{{rehearsal['member']}}</td>
+                    <td>
+                        <button type="button" rehearsal-id="{{rehearsal['id']}}" class="btn">
+                            <i class="fa fa-trash"></i>
+                        </button>
+                        <!--                            <button id="cancel-rehearsal" type="button" rehearsal-id="{{rehearsal['id']}}" class="btn"-->
+                        <!--                                    onclick="location.href='/cancel/{{rehearsal['id']}}'">-->
+                        <!--                                <i class="fa fa-trash"></i>-->
+                        <!--                            </button>-->
+                    </td>
+                    <td><input type="checkbox" name="swap" rehearsal-id="{{rehearsal['id']}}"
+                               value="{{rehearsal['id']}}"></td>
+                </tr>
+                {% endfor %}
+            </table>
+            <!--            </form>-->
         </div>
     </div>
 </div>
@@ -130,8 +158,7 @@
 <div id="execute" class="w3-modal">
     <div class="w3-modal-content w3-animate-zoom">
         <div class="w3-container w3-black">
-               <span onclick="document.getElementById('execute').style.display='none'"
-                     class="w3-button w3-display-topright w3-large">x</span>
+            <span id="execute-close" class="w3-button w3-display-topright w3-large">x</span>
             <h1>Reschedule</h1>
         </div>
         <div class="w3-container">
@@ -160,5 +187,12 @@
         </div>
     </div>
 </div>
+<div id="overlay" class="overlay">
+    <div class="rotation-container">
+        <div class="rotating">:(:</div>
+    </div>
+</div>
+<script src="static/js/main.js"></script>
+
 </body>
 </html>

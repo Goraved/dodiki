@@ -50,15 +50,19 @@ def generate_days_endpoint():
 
 @app.route("/swap", methods=['POST'])
 def swap_endpoint():
-    swap_ids = request.form.getlist('swap')
+    swap_ids = request.data.decode().split(",")
     swap_rehearsal_members(swap_ids)
-    return redirect("/")
+    rehearsals = get_future_rehearsals()
+    for i in rehearsals:
+        i["date"] = str(i["date"])
+    return str(rehearsals).replace("'", '"')
 
 
 @app.route("/cancel/<rehearsal_id>")
 def cancel_endpoint(rehearsal_id):
     cancel_rehearsal(int(rehearsal_id))
-    return redirect("/")
+    rehearsals = get_future_rehearsals()
+    return str(rehearsals).replace("'", '"')
 
 
 if __name__ == "__main__":
