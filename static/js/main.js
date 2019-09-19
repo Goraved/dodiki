@@ -5,11 +5,13 @@ $(document)
         getDomEl();
         showHideBlock();
         workWithSwapInput();
-        rehearsalWorker();
+        cancelWorker();
+        swapWorker();
         rescheduleWorker();
     });
 
-function rehearsalWorker() {
+function cancelWorker() {
+    _dom["cancelRehearsalAction"] = $("button[rehearsal-id]");
     _dom.cancelRehearsalAction.on("click", (ev) => {
         const _button = ev.currentTarget;
         const rId = _button.getAttribute("rehearsal-id");
@@ -25,6 +27,9 @@ function rehearsalWorker() {
             })
         }
     });
+}
+
+function swapWorker() {
     _dom.swapAction.on("click", () => {
         $('#swap').hide();
         const checkedEl = $("input[name='swap']:checked");
@@ -112,7 +117,7 @@ function regenerateRehearsalsRows(rehearsals) {
         _dom.rehearsalsTable.append(row);
     });
     workWithSwapInput();
-    _dom["cancelRehearsalAction"] = $("button[rehearsal-id]");
+    cancelWorker();
 }
 
 function setTitle(date, weekday, member) {
