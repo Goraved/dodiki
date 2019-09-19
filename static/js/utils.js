@@ -1,4 +1,3 @@
-_import("./helper/ajax.js", "Ajax");
 _import("./helper/copy-card.js", "copyCardNumber");
 
 function _import(path, name) {

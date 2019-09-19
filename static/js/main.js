@@ -4,12 +4,13 @@ $(document)
     .ready(function () {
         getDomEl();
         showHideBlock();
-        workWithInput();
+        workWithSwapInput();
         rehearsalWorker();
+        rescheduleWorker();
     });
 
 function rehearsalWorker() {
-    _dom.cancelRehearsal.on("click", (ev) => {
+    _dom.cancelRehearsalAction.on("click", (ev) => {
         const _button = ev.currentTarget;
         const rId = _button.getAttribute("rehearsal-id");
         if (rId) {
@@ -18,17 +19,9 @@ function rehearsalWorker() {
             _dom.overlay.show();
             $.ajax(`/cancel/${rId}`, {
                 method: "GET"
-            }).done((data) => {
+            }).done((res) => {
                 _dom.overlay.hide();
-                parseJson(data)
-                    .then(rehearsals => {
-                        setTitle(
-                            rehearsals[0].date,
-                            rehearsals[0].weekday,
-                            rehearsals[0].member
-                        );
-                    });
-                $(userRow).remove();
+                updatePage(res);
             })
         }
     });
@@ -48,27 +41,61 @@ function rehearsalWorker() {
             data: `${ids}`
         }).done(res => {
             _dom.overlay.hide();
-            parseJson(res)
-                .then(rehearsals => {
-                    regenerateRehearsalsRow(rehearsals);
-                    setTitle(
-                        rehearsals[0].date,
-                        rehearsals[0].weekday,
-                        rehearsals[0].member
-                    );
-                });
+            updatePage(res);
         })
     })
 }
 
 function rescheduleWorker() {
-    _dom.rescheduleAction.on("click", () => {
-
+    _dom.generateListAction.on("click", () => {
+        const member = $(`select[name="member"]`).get(0);
+        const half = $(`input[name="half"]`).get(0);
+        const date = $(`input[name="date"]`).get(0);
+        const data = {
+            date: date.value,
+            member: member.value,
+            half: half.value
+        };
+        _dom.overlay.show();
+        disableRehearsals();
+        $.ajax("/generate", {
+            method: "POST",
+            contentType: "application/json",
+            data: JSON.stringify(data)
+        }).done(res => {
+            _dom.overlay.hide();
+            updatePage(res);
+        })
     })
 }
 
-function regenerateRehearsalsRow(rehearsals) {
-    $(".r-row").remove();
+function disableRehearsals() {
+    ([]).slice
+        .call(document.getElementsByClassName("(╯°□°）╯︵ ┻━┻"))
+        .forEach(row => {
+            disableRow(row);
+        });
+}
+
+function updatePage(res) {
+    parseJson(res)
+        .then(rehearsals => {
+            regenerateRehearsalsRows(rehearsals);
+            setTitle(
+                rehearsals[0].date,
+                rehearsals[0].weekday,
+                rehearsals[0].member
+            );
+        });
+}
+
+function regenerateRehearsalsRows(rehearsals) {
+    ([]).slice
+        .call(document.getElementsByClassName("(╯°□°）╯︵ ┻━┻"))
+        .forEach(row => {
+            row.parentElement
+                .removeChild(row)
+        });
     rehearsals.forEach(rehearsal => {
         const row = _dom.rehearsalRowTemplate[0].content.cloneNode(true);
         const tds = $(row).find("td");
@@ -84,7 +111,8 @@ function regenerateRehearsalsRow(rehearsals) {
         $(row).find("input")[0].value = rehearsal.id;
         _dom.rehearsalsTable.append(row);
     });
-    workWithInput();
+    workWithSwapInput();
+    _dom["cancelRehearsalAction"] = $("button[rehearsal-id]");
 }
 
 function setTitle(date, weekday, member) {
@@ -103,16 +131,17 @@ function getDomEl() {
     _dom["menuEl"] = $("#menu");
     _dom["menuCloseAction"] = $("#menu-close");
     _dom["rehearsalsCloseAction"] = $("#rehearsals-close");
-    _dom["cancelRehearsal"] = $("button[rehearsal-id]");
+    _dom["cancelRehearsalAction"] = $("button[rehearsal-id]");
     _dom["titleDateEl"] = $("#title-date");
     _dom["titleMemberEl"] = $("#title-member");
     _dom["swapAction"] = $("#swap");
     _dom["overlay"] = $("#overlay");
     _dom["rehearsalRowTemplate"] = $("#rehearsal-row-template");
-    _dom["rehearsalsTable"] = $("#rehearsals-table")
+    _dom["rehearsalsTable"] = $("#rehearsals-table");
+    _dom["generateListAction"] = $("#generate-list-action");
 }
 
-function workWithInput() {
+function workWithSwapInput() {
     $("input[name='swap']").change(function () {
         const maxAllowed = 2;
         let cnt = $("input[name='swap']:checked").length;
@@ -139,13 +168,12 @@ function showHideBlock() {
     _dom.rehearsalsEl.on("click", ev => {
         if (ev.target === _dom.rehearsalsEl.get(0))
             _dom.rehearsalsEl.hide();
-    })
+    });
     _dom.executeEl.on("click", (ev) => {
         if (ev.target === _dom.executeEl.get(0))
             _dom.executeEl.hide();
     })
 }
-
 
 function disableRow(row) {
     row.style.background = "rgba(0,0,0,0.3)";

@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 from datetime import datetime
-
+import json
 from flask import Flask, render_template, request
 from flask.json import jsonify
 # from flask_swagger_ui import get_swaggerui_blueprint
@@ -38,14 +38,19 @@ def get_members_endpoint():
 
 @app.route("/generate", methods=['POST'])
 def generate_days_endpoint():
-    member = int(request.form['member'])
+    _data = request.data.decode()
+    obj = json.loads(_data)
+    member = int(obj['member'])
     try:
-        half = bool(request.form['half'])
+        half = bool(obj['half'])
     except:
         half = False
-    date_from = datetime.strptime(request.form['date'], '%Y-%m-%d').date()
-    day_list = generate_list(date_from, member, half)
-    return redirect("/")
+    date_from = datetime.strptime(obj['date'], '%Y-%m-%d').date()
+    generate_list(date_from, member, half)
+    rehearsals = get_future_rehearsals()
+    for i in rehearsals:
+        i["date"] = str(i["date"])
+    return str(rehearsals).replace("'", '"')
 
 
 @app.route("/swap", methods=['POST'])
@@ -62,6 +67,8 @@ def swap_endpoint():
 def cancel_endpoint(rehearsal_id):
     cancel_rehearsal(int(rehearsal_id))
     rehearsals = get_future_rehearsals()
+    for i in rehearsals:
+        i["date"] = str(i["date"])
     return str(rehearsals).replace("'", '"')
 
 

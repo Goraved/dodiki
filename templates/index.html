@@ -34,7 +34,7 @@
 <body>
 
 <template id="rehearsal-row-template">
-    <tr class="r-row">
+    <tr class="(╯°□°）╯︵ ┻━┻">
         <td class="r-date"></td>
         <td class="r-weekday"></td>
         <td class="r-member"></td>
@@ -83,8 +83,6 @@
 <div id="menu" class="w3-modal">
     <div class="w3-modal-content w3-animate-zoom">
         <div class="w3-container w3-black w3-display-container">
-            <!--               <span id="menu-close" onclick="document.getElementById('menu').style.display='none'"-->
-            <!--                     class="w3-button w3-display-topright w3-large">x</span>-->
             <span id="menu-close" class="w3-button w3-display-topright w3-large">x</span>
             <h1>Payment card</h1>
         </div>
@@ -107,19 +105,15 @@
 <div id="rehearsals" class="w3-modal">
     <div class="w3-modal-content w3-animate-zoom">
         <div class="w3-container w3-black">
-            <!--               <span id="rehearsals-close" onclick="document.getElementById('rehearsals').style.display='none'"-->
-            <!--                     class="w3-button w3-display-topright w3-large">x</span>-->
             <span id="rehearsals-close" class="w3-button w3-display-topright w3-large">x</span>
             <h1>Rehearsals</h1>
         </div>
         <div class="w3-container">
-            <!--            <form action="/swap" method="post">-->
             <div class="w3-container">
                 <div class="w3-left">
                     <p>List of planned rehearsals:</p>
                 </div>
                 <div class="w3-right">
-                    <!--                        <button id="swap" type="submit" class="w3-button w3-green">↑↓</button>-->
                     <button id="swap" type="button" class="w3-button w3-green">↑↓</button>
                 </div>
             </div>
@@ -132,7 +126,7 @@
                     <th>Swap</th>
                 </tr>
                 {% for rehearsal in rehearsals %}
-                <tr class="r-row">
+                <tr class="(╯°□°）╯︵ ┻━┻">
                     <td>{{rehearsal['date']}}</td>
                     <td>{{rehearsal['weekday']}}</td>
                     <td>{{rehearsal['member']}}</td>
@@ -140,10 +134,6 @@
                         <button type="button" rehearsal-id="{{rehearsal['id']}}" class="btn">
                             <i class="fa fa-trash"></i>
                         </button>
-                        <!--                            <button id="cancel-rehearsal" type="button" rehearsal-id="{{rehearsal['id']}}" class="btn"-->
-                        <!--                                    onclick="location.href='/cancel/{{rehearsal['id']}}'">-->
-                        <!--                                <i class="fa fa-trash"></i>-->
-                        <!--                            </button>-->
                     </td>
                     <td><input type="checkbox" name="swap" rehearsal-id="{{rehearsal['id']}}"
                                value="{{rehearsal['id']}}"></td>
@@ -163,27 +153,25 @@
         </div>
         <div class="w3-container">
             <p class="w3-large">Generate new rehearsals schedule:</p>
-            <form class="w3-margin-left" action="/generate" method="POST">
-                <p class="w3-medium">Who will pay?</p>
-                <p>
-                    <select name="member" required>
-                        {% for member in members %}
-                        <option value="{{member['id']}}">{{member['name']}}</option>
-                        {% endfor %}
-                    </select>
-                </p>
-                <hr>
-                <p class="w3-medium">Half turn?</p>
-                <p><input class="w3-input w3-padding-16 w3-border w3-check" type="checkbox" value="True" name="half">
-                </p>
-                <hr>
-                <p class="w3-medium">Date from?</p>
-                <p><input class="w3-input w3-padding-16 w3-border" type="date" placeholder="Date" required name="date"
-                          value="{{today['date']}}"></p>
-                <p>
-                    <button class="w3-button w3-green" type="submit">Generate list</button>
-                </p>
-            </form>
+            <p class="w3-medium">Who will pay?</p>
+            <p>
+                <select name="member" required>
+                    {% for member in members %}
+                    <option value="{{member['id']}}">{{member['name']}}</option>
+                    {% endfor %}
+                </select>
+            </p>
+            <hr>
+            <p class="w3-medium">Half turn?</p>
+            <p><input class="w3-input w3-padding-16 w3-border w3-check" type="checkbox" value="True" name="half">
+            </p>
+            <hr>
+            <p class="w3-medium">Date from?</p>
+            <p><input class="w3-input w3-padding-16 w3-border" type="date" placeholder="Date" required name="date"
+                      value="{{today['date']}}"></p>
+            <p>
+                <button id="generate-list-action" class="w3-button w3-green" type="button">Generate list</button>
+            </p>
         </div>
     </div>
 </div>

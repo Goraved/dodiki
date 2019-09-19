@@ -22,7 +22,3 @@ export function selector(selectBy) {
     }
     return selectedEl;
 }
-
-//"asdf[aaa]:a".match(/^([\#\.\w\d-]*)(?:\[(.*)\])?(?:\:(.*))?/)
-
-// /^(?:\s*(<[\w\W]+>)[^>]*|#([\w-]+))$/

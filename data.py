@@ -5,6 +5,7 @@ import MySQLdb
 
 
 def query(sql):
+    # ATTENTION i dont now how actual must set environ
     db_to_prod_connection()
     db = MySQLdb.connect(user=os.environ['DB_USER'], password=os.environ['DB_PASS'],
                          host=os.environ['DB_HOST'], charset='utf8',
@@ -81,6 +82,7 @@ def db_connection_for_noob():
     os.environ['DB_HOST'] = 'localhost'
     os.environ['DB'] = 'dodiki_db'
     os.environ['DB_PASS'] = '12345678'
+
 
 def db_to_prod_connection():
     os.environ['DB_USER'] = 'dodiki'
