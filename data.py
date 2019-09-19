@@ -5,8 +5,6 @@ import MySQLdb
 
 
 def query(sql):
-    # ATTENTION i dont now how actual must set environ
-    db_to_prod_connection()
     db = MySQLdb.connect(user=os.environ['DB_USER'], password=os.environ['DB_PASS'],
                          host=os.environ['DB_HOST'], charset='utf8',
                          database=os.environ['DB'], connect_timeout=600)
@@ -44,7 +42,7 @@ def delete_not_relevant_days(from_date):
 def write_days_list_into_db(days):
     delete_not_relevant_days(days[0]['date'])
     str_query = 'Insert into days values '
-    day_data = [f"(0,'{day['date']}','{day['weekday']}','{day['member']}',{day['passed']}, 330)" for day in days]
+    day_data = [f"(0,'{day['date']}','{day['weekday']}','{day['member']}',{day['passed']}, 400)" for day in days]
     str_query += ', '.join(day_data)
     query(str_query)
 
@@ -76,20 +74,3 @@ def swap_rehearsal_members(swap_ids):
     cur = query(f"Update days set member_id = {rehearsals[1]['member_id']} where id = {rehearsals[0]['id']};")
     cur = query(f"Update days set member_id = {rehearsals[0]['member_id']} where id = {rehearsals[1]['id']};")
 
-
-def db_connection_for_noob():
-    os.environ['DB_USER'] = 'pahlava'
-    os.environ['DB_HOST'] = 'localhost'
-    os.environ['DB'] = 'dodiki_db'
-    os.environ['DB_PASS'] = '12345678'
-
-
-def db_to_prod_connection():
-    os.environ['DB_USER'] = 'dodiki'
-    os.environ['DB_HOST'] = 'den1.mysql3.gear.host'
-    os.environ['DB'] = 'dodiki'
-    os.environ['DB_PASS'] = 'Qb0kC17-uBr!'
-
-    # ser = os.environ['DB_USER'], password = os.environ['DB_PASS'],
-    # host = os.environ['DB_HOST'], charset = 'utf8',
-    # database = os.environ['DB']
