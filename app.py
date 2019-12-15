@@ -1,16 +1,17 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-from datetime import datetime
 import json
+from datetime import datetime
+
 from flask import Flask, render_template, request
 from flask.json import jsonify
-# from flask_swagger_ui import get_swaggerui_blueprint
-# from flask_restplus import Resource, Api
-from werkzeug.utils import redirect
 
 from data import set_passed_rehearsals, get_members, swap_rehearsal_members
 from generation import generate_list, get_future_rehearsals, cancel_rehearsal
 from verify import requires_auth
+
+# from flask_swagger_ui import get_swaggerui_blueprint
+# from flask_restplus import Resource, Api
 
 SWAGGER_URL = 'swagger'
 app = Flask(__name__)
@@ -37,7 +38,7 @@ def get_members_endpoint():
     return jsonify({'members': get_members()})
 
 
-@app.route("/generate", methods=['POST'])
+@app.route("/generate", methods=['GET', 'POST'])
 @requires_auth
 def generate_days_endpoint():
     _data = request.data.decode()
@@ -55,7 +56,7 @@ def generate_days_endpoint():
     return str(rehearsals).replace("'", '"')
 
 
-@app.route("/swap", methods=['POST'])
+@app.route("/swap", methods=['GET', 'POST'])
 @requires_auth
 def swap_endpoint():
     swap_ids = request.data.decode().split(",")
@@ -66,7 +67,7 @@ def swap_endpoint():
     return str(rehearsals).replace("'", '"')
 
 
-@app.route("/cancel/<rehearsal_id>")
+@app.route("/cancel/<rehearsal_id>", methods=['GET', 'POST'])
 @requires_auth
 def cancel_endpoint(rehearsal_id):
     cancel_rehearsal(int(rehearsal_id))

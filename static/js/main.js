@@ -59,7 +59,7 @@ function rescheduleWorker() {
         const data = {
             date: date.value,
             member: member.value,
-            half: half.value
+            half: half.checked
         };
         _dom.overlay.show();
         disableRehearsals();
