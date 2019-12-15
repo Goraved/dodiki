@@ -10,6 +10,7 @@ from werkzeug.utils import redirect
 
 from data import set_passed_rehearsals, get_members, swap_rehearsal_members
 from generation import generate_list, get_future_rehearsals, cancel_rehearsal
+from verify import requires_auth
 
 SWAGGER_URL = 'swagger'
 app = Flask(__name__)
@@ -37,6 +38,7 @@ def get_members_endpoint():
 
 
 @app.route("/generate", methods=['POST'])
+@requires_auth
 def generate_days_endpoint():
     _data = request.data.decode()
     obj = json.loads(_data)
@@ -54,6 +56,7 @@ def generate_days_endpoint():
 
 
 @app.route("/swap", methods=['POST'])
+@requires_auth
 def swap_endpoint():
     swap_ids = request.data.decode().split(",")
     swap_rehearsal_members(swap_ids)
@@ -64,6 +67,7 @@ def swap_endpoint():
 
 
 @app.route("/cancel/<rehearsal_id>")
+@requires_auth
 def cancel_endpoint(rehearsal_id):
     cancel_rehearsal(int(rehearsal_id))
     rehearsals = get_future_rehearsals()

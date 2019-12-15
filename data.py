@@ -74,3 +74,11 @@ def swap_rehearsal_members(swap_ids):
     cur = query(f"Update days set member_id = {rehearsals[1]['member_id']} where id = {rehearsals[0]['id']};")
     cur = query(f"Update days set member_id = {rehearsals[0]['member_id']} where id = {rehearsals[1]['id']};")
 
+
+def get_user(username):
+    users = []
+    cur = query("select username, password from aqa where username like '{}'".format(username))
+    for row in cur.fetchall():
+        users.append({'username': row[0], 'pass': row[1]})
+    cur.close()
+    return users
