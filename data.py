@@ -80,5 +80,4 @@ def get_user(username):
     cur = query("select username, password from aqa where username like '{}'".format(username))
     for row in cur.fetchall():
         users.append({'username': row[0], 'pass': row[1]})
-    cur.close()
     return users
