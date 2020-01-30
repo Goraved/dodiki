@@ -8,10 +8,10 @@ def get_list_of_days(start_from=None):
         start_from = date.today()
     index = 0
     days = []
-    weekdays = {1: 'Tuesday', 3: 'Thursday'}
+    weekdays = {3: 'Thursday', 6: 'Sunday'}
     while len(days) < 30:
         day = start_from + timedelta(index)
-        if day.weekday() in [1, 3]:
+        if day.weekday() in [3, 6]:
             if day < date.today():
                 passed = True
             else:
