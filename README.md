@@ -9,3 +9,6 @@ Site was created for the manage rehearsals for the SBT band.
 * Generate new list;
 * Swap rehersals;
 * Cancel rehearsal.
+
+## Link
+http://dodiki.herokuapp.com/
