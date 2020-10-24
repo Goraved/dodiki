@@ -6,22 +6,19 @@ from datetime import datetime
 from flask import Flask, render_template, request
 from flask.json import jsonify
 
-from data import set_passed_rehearsals, get_members, swap_rehearsal_members
 from generation import generate_list, get_future_rehearsals, cancel_rehearsal
+from models.member import get_members
+from models.rehearsal import Rehearsal
 from verify import requires_auth
-
-# from flask_swagger_ui import get_swaggerui_blueprint
-# from flask_restplus import Resource, Api
 
 SWAGGER_URL = 'swagger'
 app = Flask(__name__)
-# api = Api(app)
 app.jinja_env.add_extension('jinja2.ext.loopcontrols')
 
 
 @app.route("/")
 def main():
-    set_passed_rehearsals()
+    Rehearsal.set_passed_rehearsals()
     rehearsals = get_future_rehearsals()
     members = get_members()
     return render_template('index.html', today=rehearsals[0], rehearsals=rehearsals, members=members)
@@ -29,13 +26,17 @@ def main():
 
 @app.route("/get_rehearsals", methods=['GET'])
 def get_rehearsals_endpoint():
-    set_passed_rehearsals()
-    return jsonify({'rehearsals': get_future_rehearsals()})
+    Rehearsal.set_passed_rehearsals()
+    # Class objects to dict
+    rehearsals = [vars(_) for _ in get_future_rehearsals()]
+    return jsonify({'rehearsals': rehearsals})
 
 
 @app.route("/get_members", methods=['GET'])
 def get_members_endpoint():
-    return jsonify({'members': get_members()})
+    # Class objects to dict
+    members = [vars(_) for _ in get_members()]
+    return jsonify({'members': members})
 
 
 @app.route("/generate", methods=['GET', 'POST'])
@@ -52,7 +53,9 @@ def generate_days_endpoint():
     generate_list(date_from, member, half)
     rehearsals = get_future_rehearsals()
     for i in rehearsals:
-        i["date"] = str(i["date"])
+        i.rehearsal_date = str(i.rehearsal_date)
+    # Class objects to dict
+    rehearsals = [vars(_) for _ in rehearsals]
     return str(rehearsals).replace("'", '"')
 
 
@@ -60,10 +63,12 @@ def generate_days_endpoint():
 @requires_auth
 def swap_endpoint():
     swap_ids = request.data.decode().split(",")
-    swap_rehearsal_members(swap_ids)
+    Rehearsal.swap_rehearsal_members(swap_ids)
     rehearsals = get_future_rehearsals()
     for i in rehearsals:
-        i["date"] = str(i["date"])
+        i.rehearsal_date = str(i.rehearsal_date)
+    # Class objects to dict
+    rehearsals = [vars(_) for _ in rehearsals]
     return str(rehearsals).replace("'", '"')
 
 
@@ -73,7 +78,9 @@ def cancel_endpoint(rehearsal_id):
     cancel_rehearsal(int(rehearsal_id))
     rehearsals = get_future_rehearsals()
     for i in rehearsals:
-        i["date"] = str(i["date"])
+        i.rehearsal_date = str(i.rehearsal_date)
+    # Class objects to dict
+    rehearsals = [vars(_) for _ in rehearsals]
     return str(rehearsals).replace("'", '"')
 
 
