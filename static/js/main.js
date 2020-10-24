@@ -87,9 +87,9 @@ function updatePage(res) {
         .then(rehearsals => {
             regenerateRehearsalsRows(rehearsals);
             setTitle(
-                rehearsals[0].date,
-                rehearsals[0].weekday,
-                rehearsals[0].member
+                rehearsals[0].rehearsal_date,
+                rehearsals[0].day_of_week,
+                rehearsals[0].member_name
             );
         });
 }
@@ -106,14 +106,14 @@ function regenerateRehearsalsRows(rehearsals) {
         const tds = $(row).find("td");
         tds.each((i, td) => {
             if (td.className === "r-date")
-                td.innerText = rehearsal.date;
+                td.innerText = rehearsal.rehearsal_date;
             if (td.className === "r-weekday")
-                td.innerText = rehearsal.weekday;
+                td.innerText = rehearsal.day_of_week;
             if (td.className === "r-member")
-                td.innerText = rehearsal.member;
+                td.innerText = rehearsal.member_name;
         });
-        $(row).find("button")[0].setAttribute("rehearsal-id", rehearsal.id);
-        $(row).find("input")[0].value = rehearsal.id;
+        $(row).find("button")[0].setAttribute("rehearsal-id", rehearsal.rehearsal_id);
+        $(row).find("input")[0].value = rehearsal.rehearsal_id;
         _dom.rehearsalsTable.append(row);
     });
     workWithSwapInput();

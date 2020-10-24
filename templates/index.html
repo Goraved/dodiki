@@ -51,10 +51,10 @@
 
 <div class="bgimg w3-display-container w3-text-white">
     <div class="w3-display-middle w3-jumbo">
-        <h3 id="title-date">Next rehearsal at {{today['date']}}, {{today['weekday']}}</h3>
+        <h3 id="title-date">Next rehearsal at {{today.rehearsal_date}}, {{today.day_of_week}}</h3>
         <h2><b><a id="title-member"
                   href="https://soundcloud.com/roman-pobotin/sadbuttrue-wav/s-Nce4M?in=roman-pobotin/sets/sbt/s-ZlEpE#t=0:7"
-                  target="_blank">{{today['member']}}</a></b>
+                  target="_blank">{{today.member_name}}</a></b>
             will pay!
         </h2>
     </div>
@@ -135,16 +135,16 @@
                 </tr>
                 {% for rehearsal in rehearsals %}
                 <tr class="(╯°□°）╯︵ ┻━┻">
-                    <td>{{rehearsal['date']}}</td>
-                    <td>{{rehearsal['weekday']}}</td>
-                    <td>{{rehearsal['member']}}</td>
+                    <td>{{rehearsal.rehearsal_date}}</td>
+                    <td>{{rehearsal.day_of_week}}</td>
+                    <td>{{rehearsal.member_name}}</td>
                     <td>
-                        <button type="button" rehearsal-id="{{rehearsal['id']}}" class="btn">
+                        <button type="button" rehearsal-id="{{rehearsal.rehearsal_id}}" class="btn">
                             <i class="fa fa-trash"></i>
                         </button>
                     </td>
-                    <td><input type="checkbox" name="swap" rehearsal-id="{{rehearsal['id']}}"
-                               value="{{rehearsal['id']}}"></td>
+                    <td><input type="checkbox" name="swap" rehearsal-id="{{rehearsal.rehearsal_id}}"
+                               value="{{rehearsal.rehearsal_id}}"></td>
                 </tr>
                 {% endfor %}
             </table>
@@ -165,7 +165,7 @@
             <p>
                 <select name="member" required>
                     {% for member in members %}
-                    <option value="{{member['id']}}">{{member['name']}}</option>
+                    <option value="{{member.member_id}}">{{member.name}}</option>
                     {% endfor %}
                 </select>
             </p>
@@ -176,7 +176,7 @@
             <hr>
             <p class="w3-medium">Date from?</p>
             <p><input class="w3-input w3-padding-16 w3-border" type="date" placeholder="Date" required name="date"
-                      value="{{today['date']}}"></p>
+                      value="{{today.rehearsal_date}}"></p>
             <p>
                 <button id="generate-list-action" class="w3-button w3-green" type="button">Generate list</button>
             </p>

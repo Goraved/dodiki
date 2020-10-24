@@ -1,7 +1,5 @@
 click
 Flask
-flask-swagger-ui
-flask-restplus
 itsdangerous
 Jinja2
 MarkupSafe
@@ -18,3 +16,4 @@ requests
 setuptools
 urllib3
 wheel
+pylint-fail-under
