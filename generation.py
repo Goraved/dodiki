@@ -10,10 +10,10 @@ def get_list_of_rehearsals(start_from: date = None) -> List[Rehearsal]:
         start_from = date.today()
     index = 0
     rehearsals = []
-    weekdays = {3: 'Thursday', 6: 'Sunday'}
+    weekdays = {3: 'Thursday'}
     while len(rehearsals) < 30:
         day = start_from + timedelta(index)
-        if day.weekday() in (3, 6):
+        if day.weekday() in weekdays.keys():
             if day < date.today():
                 passed = True
             else:
