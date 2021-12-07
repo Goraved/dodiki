@@ -16,4 +16,4 @@ requests
 setuptools
 urllib3
 wheel
-pylint-fail-under
+pylint
