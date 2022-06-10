@@ -11,7 +11,7 @@ def get_list_of_rehearsals(start_from: date = None) -> List[Rehearsal]:
     index = 0
     rehearsals = []
     weekdays = {6: 'Sunday'}
-    while len(rehearsals) < 30:
+    while len(rehearsals) < 12:
         day = start_from + timedelta(index)
         if day.weekday() in weekdays.keys():
             if day < date.today():
@@ -50,7 +50,8 @@ def set_members(rehearsals: List[Rehearsal], member_id: int = None, half: bool =
         past_previous_pay = rehearsals[rehearsal_index - 2].member_name
         if previous_pay == past_previous_pay:
             member_index += 1
-            if member_index > 3:
+            # Max count of member index
+            if member_index > len(members) - 1:
                 member_index = 0
         rehearsal.member_name = members[member_index].member_id
     return rehearsals
