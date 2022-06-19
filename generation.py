@@ -20,40 +20,48 @@ def get_list_of_rehearsals(start_from: date = None) -> List[Rehearsal]:
                 passed = False
             rehearsals.append(
                 Rehearsal(rehearsal_date=day, day_of_week=weekdays[day.weekday()], member_name='', passed=passed,
-                          price=440, rehearsal_id=0))
+                          price=470, rehearsal_id=0))
         index += 1
     return rehearsals
 
 
-def set_members(rehearsals: List[Rehearsal], member_id: int = None, half: bool = False) -> List[Rehearsal]:
-    members = get_members()
-    member_index = members.index([member for member in members if member.member_id == member_id][0])
-    if member_id is None:
-        member_index = 0
+def set_members(rehearsals: List[Rehearsal], member_id: int = 0, half: bool = False) -> List[Rehearsal]:
+    # get all member ids
+    members = [member.member_id for member in get_members()]
+    # get index of requested member to start schedule
+    member_index = members.index([member for member in members if member == member_id][0])
+
     for rehearsal in rehearsals:
         rehearsal_index = rehearsals.index(rehearsal)
+
         # individual logic for 2 first days
         if rehearsal_index == 0:
-            rehearsal.member_name = members[member_index].member_id
+            rehearsal.member_name = members[member_index]
             continue
-        elif rehearsal_index == 1:
-            if not half:
-                rehearsal.member_name = members[member_index].member_id
-                continue
-            else:
-                member_index += 1
-                if member_index > 3:
-                    member_index = 0
-                rehearsal.member_name = members[member_index].member_id
+        # TODO disable until 2 rehearsals per week
+        # elif rehearsal_index == 1:
+        #     if not half:
+        #         rehearsal.member_name = members[member_index].member_id
+        #         continue
+        # else:
+        #     member_index += 1
+        #     if member_index > 3:
+        #         member_index = 0
+        #     rehearsal.member_name = members[member_index].member_id
         # regular logic for the rest of days
-        previous_pay = rehearsals[rehearsal_index - 1].member_name
-        past_previous_pay = rehearsals[rehearsal_index - 2].member_name
-        if previous_pay == past_previous_pay:
-            member_index += 1
-            # Max count of member index
-            if member_index > len(members) - 1:
-                member_index = 0
-        rehearsal.member_name = members[member_index].member_id
+
+        previous_pay = members.index(rehearsals[rehearsal_index - 1].member_name)
+        # TODO disable until 2 rehearsals per week
+        # past_previous_pay = rehearsals[rehearsal_index - 2].member_name
+        # if previous_pay == past_previous_pay:
+
+        member_index = previous_pay + 1
+        # Max count of member index
+        if member_index >= len(members):
+            member_index = 0
+
+        rehearsal.member_name = members[member_index]
+
     return rehearsals
 
 
