@@ -12,3 +12,4 @@ Site was created for the manage rehearsals for the SBT band.
 
 ## Link
 http://dodiki.herokuapp.com/
+
