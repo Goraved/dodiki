@@ -10,3 +10,11 @@ function _import(path, name) {
             console.log(`%cERROR IMPORT: path - ${path}, name - ${name}, err - ${err}`, "color:red");
         })
 }
+
+function copyToClipboard(element) {
+  var $temp = $("<input>");
+  $("body").append($temp);
+  $temp.val($(element).text()).select();
+  document.execCommand("copy");
+  $temp.remove();
+}

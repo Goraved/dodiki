@@ -29,6 +29,10 @@
         background-size: cover;
     }
 
+
+
+
+
 </style>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script type="text/javascript" src="static/js/utils.js"></script>
@@ -88,8 +92,22 @@
             <h1>Payment card</h1>
         </div>
         <div class="w3-container">
-            <h5><span onclick="copyCardNumber(this)" id="cardNumber">5375414106892499</span></h5>
-            <h5>Monobank</h5>
+            <h4>IBAN:</h4>
+            <h5><span id="iban">UA023220010000026005320037612</span>
+                <button onclick="copyToClipboard('#iban')"><i class="fa fa-copy"></i></button>
+            </h5>
+            <h4>ЄДРПОУ:</h4>
+            <h5><span id="edr">3224421492</span>
+                <button onclick="copyToClipboard('#edr')"><i class="fa fa-copy"></i></button>
+            </h5>
+            <h4>Отримувач:</h4>
+            <h5><span id="receiver">Рябчук Юрій Миколайович</span>
+                <button onclick="copyToClipboard('#receiver')"><i class="fa fa-copy"></i></button>
+            </h5>
+            <h4>Призначення:</h4>
+            <h5><span id="reason">за репетицію {{today.rehearsal_date}}</span>
+                <button onclick="copyToClipboard('#reason')"><i class="fa fa-copy"></i></button>
+            </h5>
             <h4><label class="w3-text-red">{{today['price']}} UAH</label></h4>
         </div>
         <div class="w3-container w3-black">
@@ -105,7 +123,8 @@
         </div>
         <div class="w3-container w3-margin-top">
             <iframe src="https://calendar.google.com/calendar/embed?title=%D0%93%D1%80%D0%B0%D1%84%D1%96%D0%BA%20%D1%80%D0%B5%D0%BF%D0%B5%D1%82%D0%B8%D1%86%D1%96%D0%B9%D0%BD%D0%BE%D1%97%20%D0%B1%D0%B0%D0%B7%D0%B8%20Checkpoint&amp;mode=WEEK&amp;height=600&amp;wkst=2&amp;hl=uk&amp;bgcolor=%23ff9900&amp;src=mustar.du%40gmail.com&amp;color=%231badf8&amp;src=772btv7tia9ngbcvrgaj09609s%40group.calendar.google.com&amp;color=%230D7813&amp;ctz=Europe%2FKiev"
-                    style="border-width:0" width="100%" height="600" frameborder="0" scrolling="no" padding="10px"></iframe>
+                    style="border-width:0" width="100%" height="600" frameborder="0" scrolling="no"
+                    padding="10px"></iframe>
         </div>
     </div>
 </div>
