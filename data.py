@@ -1,27 +1,28 @@
 import os
 
-import MySQLdb
-from MySQLdb.cursors import Cursor
+from mysql import connector
 
 
-def query(sql: str) -> Cursor:
-    db_connect = MySQLdb.connect(user=os.environ['DB_USER'], password=os.environ['DB_PASS'],
-                                 host=os.environ['DB_HOST'], charset='utf8',
-                                 database=os.environ['DB'], connect_timeout=600)
+def query(sql: str) -> list[tuple]:
+    db_connect = connector.connect(
+        user=os.environ["DB_USER"],
+        password=os.environ["DB_PASS"],
+        host=os.environ["DB_HOST"],
+        charset="utf8",
+        database=os.environ["DB"],
+        connect_timeout=600,
+    )
     try:
-        cursor = db_connect.cursor()
-        cursor.execute("SET NAMES 'utf8'; "
-                       "SET CHARACTER SET 'utf8'; "
-                       "SET SESSION collation_connection = 'utf8_general_ci';")
-    except:
-        pass
-    try:
-        cursor = db_connect.cursor()
+        cursor = db_connect.cursor(buffered=True)
         cursor.execute(sql)
-    except (AttributeError, MySQLdb.OperationalError):
+    except (AttributeError, connector.OperationalError):
         db_connect.ping(True)
-        cursor = db_connect.cursor()
+        cursor = db_connect.cursor(buffered=True)
         cursor.execute(sql)
     db_connect.commit()
+    if sql.lower().startswith("select"):
+        result = cursor.fetchall()
+    else:
+        result = None
     db_connect.close()
-    return cursor
+    return result

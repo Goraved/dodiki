@@ -11,7 +11,7 @@ class Member:
 
 def get_members() -> List[Member]:
     members = []
-    cur = query('SELECT * FROM members')
-    for row in cur.fetchall():
+    result = query("SELECT * FROM members")
+    for row in result:
         members.append(Member(member_id=row[0], name=row[1]))
     return members

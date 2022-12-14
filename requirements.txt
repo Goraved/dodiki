@@ -3,7 +3,7 @@ Flask
 itsdangerous
 Jinja2
 MarkupSafe
-mysqlclient
+mysql-connector
 Werkzeug
 gunicorn
 certifi
