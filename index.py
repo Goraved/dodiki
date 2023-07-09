@@ -21,6 +21,10 @@ def main():
     Rehearsal.set_passed_rehearsals()
     rehearsals = get_future_rehearsals()
     members = get_members()
+    if not rehearsals:
+        date_from = datetime.today().date()
+        generate_list(date_from, 1, False)
+        rehearsals = get_future_rehearsals()
     return render_template('index.html', today=rehearsals[0], rehearsals=rehearsals, members=members)
 
 

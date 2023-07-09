@@ -65,7 +65,7 @@ def set_members(rehearsals: List[Rehearsal], member_id: int = 0, half: bool = Fa
     return rehearsals
 
 
-def generate_list(from_date, from_member, half=False) -> List[Rehearsal]:
+def generate_list(from_date: date, from_member: int = 1, half: bool = False) -> List[Rehearsal]:
     rehearsals = get_list_of_rehearsals(from_date)
     set_members(rehearsals, from_member, half)
     write_days_list_into_db(rehearsals)
