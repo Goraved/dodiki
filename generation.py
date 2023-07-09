@@ -20,7 +20,7 @@ def get_list_of_rehearsals(start_from: date = None) -> List[Rehearsal]:
                 passed = False
             rehearsals.append(
                 Rehearsal(rehearsal_date=day, day_of_week=weekdays[day.weekday()], member_name='', passed=passed,
-                          price=470, rehearsal_id=0))
+                          price=500, rehearsal_id=0))
         index += 1
     return rehearsals
 
