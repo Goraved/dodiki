@@ -20,7 +20,7 @@ def get_list_of_rehearsals(start_from: date = None) -> List[Rehearsal]:
                 passed = False
             rehearsals.append(
                 Rehearsal(rehearsal_date=day, day_of_week=weekdays[day.weekday()], member_name='', passed=passed,
-                          price=500, rehearsal_id=0))
+                          price=800, rehearsal_id=0))
         index += 1
     return rehearsals
 
@@ -29,7 +29,8 @@ def set_members(rehearsals: List[Rehearsal], member_id: int = 0, half: bool = Fa
     # get all member ids
     members = [member.member_id for member in get_members()]
     # get index of requested member to start schedule
-    member_index = members.index([member for member in members if member == member_id][0])
+    # fall back to the first member if requested id is unknown
+    member_index = members.index(member_id) if member_id in members else 0
 
     for rehearsal in rehearsals:
         rehearsal_index = rehearsals.index(rehearsal)
@@ -76,15 +77,12 @@ def get_future_rehearsals() -> List[Rehearsal]:
     return get_rehearsals(date.today())
 
 
-def cancel_rehearsal(rehearsal_id: id):
+def cancel_rehearsal(rehearsal_id: int):
     rehearsals = get_rehearsals(date.today())
-    member_name = [rehearsal.member_name for rehearsal in rehearsals if rehearsal.rehearsal_id == rehearsal_id][0]
-    date_from = [rehearsal.rehearsal_date for rehearsal in rehearsals if rehearsal.rehearsal_id == rehearsal_id][
-                    0] + timedelta(1)
-    ind = rehearsals.index([rehearsal for rehearsal in rehearsals if rehearsal.rehearsal_id == rehearsal_id][0])
-    half = False
-    member_id = [member.member_id for member in get_members() if member.name == member_name][0]
-    if rehearsals[ind + 1].member_name != member_name:
-        half = True
+    target = next((r for r in rehearsals if r.rehearsal_id == rehearsal_id), None)
+    if target is None:
+        raise ValueError(f"No such rehearsal - {rehearsal_id}")
+    date_from = target.rehearsal_date + timedelta(1)
+    member_id = next((m.member_id for m in get_members() if m.name == target.member_name), 0)
     Rehearsal.delete_rehearsal(rehearsal_id)
-    generate_list(date_from, member_id, half)
+    generate_list(date_from, member_id, False)

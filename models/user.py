@@ -10,10 +10,8 @@ class User:
 def get_user(username) -> User:
     users = []
     result = query(
-        f"SELECT username, password FROM aqa WHERE username LIKE '{username}'"
+        "SELECT username, password FROM aqa WHERE username = %s", (username,)
     )
     for row in result:
         users.append(User(username=row[0], password=row[1]))
-    if not users:
-        raise ValueError(f"No such user - {username}")
-    return users[0]
+    return users[0] if users else None

@@ -1,3 +1,4 @@
+import hmac
 from functools import wraps
 
 from flask import request, Response
@@ -12,7 +13,8 @@ def check_auth(username, password):
     user = get_user(username)
     if not user:
         return False
-    return str(username) == user.username and str(password) == user.password
+    return hmac.compare_digest(str(username), user.username) and hmac.compare_digest(
+        str(password).encode(), str(user.password).encode())
 
 
 def authenticate():

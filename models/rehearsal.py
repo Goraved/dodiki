@@ -24,54 +24,62 @@ class Rehearsal:
 
     @staticmethod
     def set_passed_rehearsals():
-        today = date.today().strftime("%Y%m%d")
-        query(f"UPDATE days SET passed = 1 WHERE date < {today}")
+        query("UPDATE days SET passed = 1 WHERE date < %s", (date.today(),))
 
     @staticmethod
     def delete_rehearsal(rehearsal_id: int):
-        query(f"DELETE FROM days WHERE id = {rehearsal_id}")
+        query("DELETE FROM days WHERE id = %s", (int(rehearsal_id),))
 
     @staticmethod
     def swap_rehearsal_members(swap_ids: tuple):
-        rehearsals = []
+        first, second = int(swap_ids[0]), int(swap_ids[1])
+        if first == second:
+            raise ValueError("Cannot swap a rehearsal with itself")
         result = query(
-            f"SELECT id, member_id FROM days WHERE id in ({swap_ids[0]},{swap_ids[1]})"
+            "SELECT id, member_id FROM days WHERE id IN (%s, %s)", (first, second)
         )
-        for row in result:
-            rehearsals.append({"id": row[0], "member_id": row[1]})
+        members = {row[0]: row[1] for row in result}
+        if len(members) != 2:
+            raise ValueError("Rehearsal not found")
+        # single statement => atomic swap
         query(
-            f"UPDATE days SET member_id = {rehearsals[1]['member_id']} WHERE id = {rehearsals[0]['id']};"
-        )
-        query(
-            f"UPDATE days SET member_id = {rehearsals[0]['member_id']} WHERE id = {rehearsals[1]['id']};"
+            "UPDATE days SET member_id = CASE id WHEN %s THEN %s WHEN %s THEN %s END "
+            "WHERE id IN (%s, %s)",
+            (first, members[second], second, members[first], first, second),
         )
 
     @staticmethod
     def delete_not_relevant_days(from_date: date):
-        query(f"DELETE FROM days WHERE date >= '{from_date}'")
+        query("DELETE FROM days WHERE date >= %s", (from_date,))
 
 
 def write_days_list_into_db(rehearsals: List[Rehearsal]):
     Rehearsal.delete_not_relevant_days(rehearsals[0].rehearsal_date)
-    str_query = "INSERT INTO days VALUES "
-    day_data = [
-        f"(0,'{rehearsal.rehearsal_date}','{rehearsal.day_of_week}','{rehearsal.member_name}'"
-        f",{rehearsal.passed}, {rehearsal.price})"
-        for rehearsal in rehearsals
-    ]
-    str_query += ", ".join(day_data)
-    query(str_query)
+    if not rehearsals:
+        return
+    placeholders = ", ".join(["(0, %s, %s, %s, %s, %s)"] * len(rehearsals))
+    params = []
+    for rehearsal in rehearsals:
+        params += [
+            rehearsal.rehearsal_date,
+            rehearsal.day_of_week,
+            rehearsal.member_name,
+            int(rehearsal.passed),
+            rehearsal.price,
+        ]
+    query("INSERT INTO days VALUES " + placeholders, tuple(params))
 
 
 def get_rehearsals(from_date: date) -> List[Rehearsal]:
     rehearsals = []
     members = get_members()
     result = query(
-        f"SELECT id, date, member_id, price, day_of_week, passed FROM days "
-        f"WHERE date >= {from_date} AND passed = 0"
+        "SELECT id, date, member_id, price, day_of_week, passed FROM days "
+        "WHERE date >= %s AND passed = 0",
+        (from_date,),
     )
     for row in result:
-        member = [member.name for member in members if member.member_id == row[2]][0]
+        member = next((m.name for m in members if m.member_id == row[2]), "")
         rehearsals.append(
             Rehearsal(
                 rehearsal_id=row[0],

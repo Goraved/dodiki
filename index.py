@@ -3,7 +3,7 @@
 import json
 from datetime import datetime
 
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, abort
 from flask.json import jsonify
 
 from generation import generate_list, get_future_rehearsals, cancel_rehearsal
@@ -46,46 +46,53 @@ def get_members_endpoint():
 @app.route("/generate", methods=['GET', 'POST'])
 @requires_auth
 def generate_days_endpoint():
-    _data = request.data.decode()
-    obj = json.loads(_data)
-    member = int(obj['member'])
     try:
-        half = bool(obj['half'])
-    except:
-        half = False
-    date_from = datetime.strptime(obj['date'], '%Y-%m-%d').date()
+        obj = json.loads(request.data.decode())
+        member = int(obj['member'])
+        date_from = datetime.strptime(obj['date'], '%Y-%m-%d').date()
+    except (ValueError, KeyError, TypeError):
+        abort(400)
+    half = bool(obj.get('half', False))
     generate_list(date_from, member, half)
     rehearsals = get_future_rehearsals()
     for i in rehearsals:
         i.rehearsal_date = str(i.rehearsal_date)
     # Class objects to dict
     rehearsals = [vars(_) for _ in rehearsals]
-    return str(rehearsals).replace("'", '"')
+    return json.dumps(rehearsals)
 
 
 @app.route("/swap", methods=['GET', 'POST'])
 @requires_auth
 def swap_endpoint():
-    swap_ids = request.data.decode().split(",")
-    Rehearsal.swap_rehearsal_members(swap_ids)
+    try:
+        swap_ids = [int(i) for i in request.data.decode().split(",")]
+        if len(swap_ids) != 2:
+            raise ValueError
+        Rehearsal.swap_rehearsal_members(swap_ids)
+    except ValueError:
+        abort(400)
     rehearsals = get_future_rehearsals()
     for i in rehearsals:
         i.rehearsal_date = str(i.rehearsal_date)
     # Class objects to dict
     rehearsals = [vars(_) for _ in rehearsals]
-    return str(rehearsals).replace("'", '"')
+    return json.dumps(rehearsals)
 
 
 @app.route("/cancel/<rehearsal_id>", methods=['GET', 'POST'])
 @requires_auth
 def cancel_endpoint(rehearsal_id):
-    cancel_rehearsal(int(rehearsal_id))
+    try:
+        cancel_rehearsal(int(rehearsal_id))
+    except ValueError:
+        abort(400)
     rehearsals = get_future_rehearsals()
     for i in rehearsals:
         i.rehearsal_date = str(i.rehearsal_date)
     # Class objects to dict
     rehearsals = [vars(_) for _ in rehearsals]
-    return str(rehearsals).replace("'", '"')
+    return json.dumps(rehearsals)
 
 
 @app.errorhandler(404)
